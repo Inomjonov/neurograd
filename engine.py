@@ -2,9 +2,12 @@ import math
 
 class VectorValue:
     def __init__(self, data, _children = (), _op: str = "", label: str = ""):
-        self.data = list(data)
+        if isinstance(data, (int, float)):
+            self.data = [float(data)]
+        else:
+            self.data = list(data)
+            
         self.grad = [0.0 for _ in self.data]
-
         self._backward = lambda: None
         self._prev = set(_children)
         self._op = _op
@@ -112,6 +115,19 @@ class VectorValue:
     
     def __rsub__(self, other):
         return other + (-self)
+    
+    def __pow__(self, power):
+        assert isinstance(power, (int, float)), "only supports scalar powers"
+
+        out_data = [x ** power for x in self.data]
+        out = VectorValue(out_data, (self,), f"**{power}")
+
+        def _backward():
+            for i in range(len(self.data)):
+                self.grad[i] += power * (self.data[i] ** (power - 1)) * out.grad[i]
+
+        out._backward = _backward
+        return out
 
         
     def backward(self):
