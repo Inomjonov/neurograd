@@ -32,6 +32,8 @@ class VectorValue:
         return out
     
     def __radd__(self, other):
+        # Handle sum() starting with 0: convert other to VectorValue
+        other = other if isinstance(other, VectorValue) else VectorValue(other)
         return self + other
     
 
@@ -142,7 +144,7 @@ class VectorValue:
                 topo.append(v)
         build_topo(self)
 
-        self.grad = [1.0 for _ in self.grad]
+        self.grad = [1.0 for _ in self.data]
         for v in reversed(topo):
             v._backward()
 

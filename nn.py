@@ -1,14 +1,14 @@
 from engine import VectorValue
 import random
+
 class Module:
-    def zer_grad(self):
+    def zero_grad(self):
         for p in self.parameters():
             p.grad = [0.0 for _ in p.grad]
     
     def parameters(self):
         return []
     
-
 class Neuron(Module):
     def __init__(self, nin, nonlin = True):
         self.w = VectorValue(
@@ -16,10 +16,11 @@ class Neuron(Module):
              label='w'
         )
     
-        self.b = VectorValue([0.0], label='w')
+        self.b = VectorValue([0.0], label='b')
         self.nonlin = nonlin
 
-    def __call__(self, x:VectorValue):
+    def __call__(self, x):
+        x = x if isinstance(x, VectorValue) else VectorValue(x)
         act = (self.w.dot(x)) + self.b
         return act.tanh() if self.nonlin else act
     
@@ -28,13 +29,14 @@ class Neuron(Module):
     
     def __repr__(self):
         return f"{'Tanh' if self.nonlin else 'Linear'} Neuron ({len(self.w.data)})"
-    
+     
 
 class Layer(Module):
     def __init__(self, nin, nout, **kwargs):
         self.neurons = [Neuron(nin, **kwargs) for _ in range(nout)]
 
-    def __call__(self, x: VectorValue):
+    def __call__(self, x):
+        x = x if isinstance(x, VectorValue) else VectorValue(x)
         values = [n(x).data[0] for n in self.neurons]
         return VectorValue(values)
 
@@ -45,7 +47,6 @@ class Layer(Module):
     def __repr__(self):
         return f"Layer of [{', '.join(str(n) for n in self.neurons)}]"
     
-
 class MLP(Module):
     def __init__(self, nin, nouts):
         size = [nin] + nouts
@@ -58,7 +59,8 @@ class MLP(Module):
             for i in range(len(nouts))
         ]
     
-    def __call__(self, x:VectorValue):
+    def __call__(self, x):
+        x = x if isinstance(x, VectorValue) else VectorValue(x)
         for layer in self.layers:
             x = layer(x)
         return x
@@ -68,3 +70,4 @@ class MLP(Module):
 
     def __repr__(self):
         return f"MLP of [{', '.join(str(layer) for layer in self.layers)}]"
+
