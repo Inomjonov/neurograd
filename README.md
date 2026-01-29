@@ -1,13 +1,13 @@
 # NeuroGrad
 
-A micrograd-like autodiff library extended to support vector operations. NeuroGrad provides automatic differentiation capabilities for building and training neural networks from scratch.
+A micrograd-like ({https://github.com/karpathy/micrograd}) autodiff library extended to support vector operations. NeuroGrad provides automatic differentiation capabilities for building and training neural networks from scratch.
 
 ## Features
 
 - **Vector-based automatic differentiation**: Extends micrograd's scalar operations to vectors
 - **Neural network components**: Built-in `Neuron`, `Layer`, and `MLP` classes
 - **Activation functions**: ReLU and Tanh activations with automatic gradient computation
-- **Simple API**: Easy-to-use interface for building neural networks
+- **Simple API**: Easy-to-use interface for building neural networks (MLPs only for now)
 
 ## Installation
 
