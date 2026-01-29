@@ -1,4 +1,4 @@
-from engine import VectorValue
+from neurograd.neurograd.engine import VectorValue
 import random
 
 class Module:
